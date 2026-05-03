@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { ReactionRoom } from './ReactionRoom'
 import { ReactionMap } from './type'
 
@@ -36,6 +37,10 @@ async function createNewRoom(ns: DurableObjectNamespace<ReactionRoom>, configura
 
   return null;
 }
+
+app.use('*', cors({
+  origin: ['https://r.reisan.dev', 'http://localhost:3030', 'http://localhost:8787', 'http://127.0.0.1:8787']
+}))
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')

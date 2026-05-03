@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      roomsApiBase: 'http://localhost:8787/api'
+      roomsApiBase: 'https://r.reisan.dev/api'
     }
   },
 
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: '2026-05-03',
 
   eslint: {
     config: {
