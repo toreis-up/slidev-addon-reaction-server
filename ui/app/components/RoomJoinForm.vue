@@ -2,9 +2,17 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import type { RoomFormState } from '~/composables/useRoomId'
 
-const { state, validate } = useRoomIdForm()
+const props = defineProps<{
+  initialRoomId?: string
+}>()
+
+const { state, validate } = useRoomIdForm(props.initialRoomId)
 const roomError = ref('')
 const isCheckingRoom = ref(false)
+
+watch(() => props.initialRoomId, (roomId) => {
+  state.roomId = getRoomIdPinValue(roomId ?? '')
+})
 
 async function onSubmit(event: FormSubmitEvent<RoomFormState>) {
   const nextRoomId = getRoomIdDigits(event.data.roomId)

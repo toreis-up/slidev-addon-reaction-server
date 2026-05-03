@@ -18,6 +18,10 @@ export function getRoomIdDigits(value: string | number[]): string {
   return value.replace(/\D/g, '').slice(0, 8)
 }
 
+export function getRoomIdPinValue(value: string | number[]): number[] {
+  return Array.from(getRoomIdDigits(value), Number)
+}
+
 export function formatRoomId(value: string | number[]): string {
   const digits = getRoomIdDigits(value)
 
@@ -50,9 +54,9 @@ export function validateRoomFormState(state: RoomFormState): FormError[] {
   return []
 }
 
-export function useRoomIdForm() {
+export function useRoomIdForm(initialRoomId: string | number[] = '') {
   const state = reactive<RoomFormState>({
-    roomId: []
+    roomId: getRoomIdPinValue(initialRoomId)
   })
 
   const roomId = computed(() => getRoomIdDigits(state.roomId))
