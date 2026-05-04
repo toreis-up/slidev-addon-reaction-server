@@ -20,8 +20,35 @@ function getRandomRoomId() {
   return String(((Math.random() * 100_000_000) | 0) % 100_000_000).padStart(8, '0')
 }
 
+function standardizeConfig(configuration: ReactionMap) {
+  return makeUniqueNames(configuration)
+}
+
+function makeUniqueNames(items: ReactionMap) {
+  const used = new Set<string>()
+
+  return items.map((reaction) => {
+    const baseName = reaction.name
+    let name = baseName
+    let index = 1
+
+    while (used.has(name)) {
+      name = `${baseName}-{index}`
+      index++
+    }
+
+    used.add(name)
+
+    return {
+      ...reaction,
+      name
+    }
+  })
+}
+
 async function createNewRoom(ns: DurableObjectNamespace<ReactionRoom>, configuration: ReactionMap) {
   if (!configuration.length) return null
+  const newConfiguration = standardizeConfig(configuration)
   for (let i = 0; i < MAX_TRY; i++) {
     const newCandidateRoomId = getRandomRoomId()
     console.debug(newCandidateRoomId)
@@ -30,7 +57,7 @@ async function createNewRoom(ns: DurableObjectNamespace<ReactionRoom>, configura
     if (!await candidateRoom.isInitialized()) {
       const newRoomId = newCandidateRoomId
       const newRoom = ns.getByName(newRoomId)
-      await newRoom.initializeRoom(newRoomId, configuration)
+      await newRoom.initializeRoom(newRoomId, newConfiguration)
       return newRoom
     }
   }
